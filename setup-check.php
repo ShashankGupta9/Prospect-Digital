@@ -41,11 +41,18 @@ $extensions = [
 
 foreach ($extensions as $ext => $desc) {
     $loaded = extension_loaded($ext);
+    $status = $loaded ? 'PASS' : ($ext === 'gd' ? 'INFO' : 'FAIL');
+    $details = $loaded 
+        ? "Loaded ({$desc})" 
+        : ($ext === 'gd' 
+            ? "Optional ({$desc}). Enabled by default on Hostinger; optional for local testing." 
+            : "Missing ({$desc})");
+
     $checks[] = [
-        'title'       => "Extension: {$ext}",
-        'status'      => $loaded ? 'PASS' : ($ext === 'gd' ? 'WARN' : 'FAIL'),
-        'details'     => $loaded ? "Loaded ({$desc})" : "Missing ({$desc})",
-        'recommended' => 'Enabled in Hostinger PHP Extensions configuration',
+        'title'       => "Extension: {$ext}" . ($ext === 'gd' ? ' (Optional)' : ''),
+        'status'      => $status,
+        'details'     => $details,
+        'recommended' => $ext === 'gd' ? 'Pre-enabled on Hostinger' : 'Enabled in PHP configuration',
     ];
 }
 
