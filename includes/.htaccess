@@ -1,0 +1,2 @@
+# Includes are server-side only; they must never be requested directly.
+Require all denied

@@ -1,0 +1,66 @@
+{
+    "version": "1.0",
+    "updated_at": "2026-09-19T15:56:05+05:30",
+    "count": 2,
+    "products": [
+        {
+            "id": "prod_29e98deb83",
+            "sku": "PD-HW-001",
+            "name": "IoT Edge Gateway Controller",
+            "slug": "iot-edge-gateway-controller",
+            "category": "Hardware & IoT Kits",
+            "category_slug": "hardware-iot-kits",
+            "short_description": "Industrial ARM Cortex-A53 IoT edge controller with dual Gigabit Ethernet.",
+            "full_description": "Engineered for edge computing, automation clusters, and high-reliability data acquisition.",
+            "images": [],
+            "price": 4999,
+            "discount_price": 3999,
+            "stock_quantity": 25,
+            "stock_status": "in_stock",
+            "specifications": {
+                "Processor": "Cortex-A53 Quad-Core 1.5GHz",
+                "RAM": "2GB LPDDR4",
+                "Operating Voltage": "9V - 36V DC",
+                "Mounting": "DIN Rail Mountable"
+            },
+            "features": [
+                "Dual Gigabit Ethernet with PoE Support",
+                "RS-485 / Modbus RTU Industrial Bus Interface",
+                "Wide Operating Temp Range: -20°C to +70°C"
+            ],
+            "tags": [],
+            "seo_title": "IoT Edge Gateway Controller | Prospect Digital Store",
+            "seo_description": "Industrial ARM Cortex-A53 IoT edge controller with dual Gigabit Ethernet.",
+            "canonical_url": "https://prospectdigital.in/store/iot-edge-gateway-controller",
+            "created_at": "2026-09-19T15:45:59+05:30",
+            "updated_at": "2026-09-19T15:45:59+05:30"
+        },
+        {
+            "id": "prod_af2dfd60e1",
+            "sku": "PD-MEDI-854",
+            "name": "Medixo",
+            "slug": "medixo",
+            "category": "Hardware & IoT Kits",
+            "category_slug": "xyz",
+            "short_description": "sava reg dfsb thrtg nrsfr",
+            "full_description": "stthrts sehrts srghbs",
+            "images": [
+                "https://unsplash.com/photos/white-and-blue-medication-pill-blister-pack-jwWtZrm67VI"
+            ],
+            "price": 5100,
+            "discount_price": 100,
+            "stock_quantity": 10,
+            "stock_status": "in_stock",
+            "specifications": [],
+            "features": [
+                "assdafsad rsfdddddddddddd ffffffffff"
+            ],
+            "tags": [],
+            "seo_title": "Medixo | Prospect Digital Store",
+            "seo_description": "sava reg dfsb thrtg nrsfr",
+            "canonical_url": "https://prospectdigital.in/prospect-digital/store/medixo",
+            "created_at": "2026-09-19T15:56:05+05:30",
+            "updated_at": "2026-09-19T15:56:05+05:30"
+        }
+    ]
+}

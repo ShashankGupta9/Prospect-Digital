@@ -1,0 +1,17 @@
+# robots.txt — Prospect Digital
+# Replace the Sitemap domain if you host this site on a different address.
+
+User-agent: *
+Allow: /
+
+# Nothing here needs to be crawled
+Disallow: /includes/
+Disallow: /data/
+Disallow: /assets/css/_*
+Disallow: /404.php
+
+# Common crawlers that only add load without value
+User-agent: SemrushBot
+Disallow: /
+
+Sitemap: https://prospectdigital.in/sitemap.xml

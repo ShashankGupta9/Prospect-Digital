@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Prospect Digital — print stylesheet
+   Loaded only for printing (media="print"), so it never affects page speed.
+   Keeps documents useful when a client prints a service page or a policy:
+   navigation, floating actions and decorative artwork are removed, links are
+   expanded, and text prints in black on white.
+   ========================================================================== */
+
+@page { margin: 16mm 14mm; }
+
+*,
+*::before,
+*::after {
+  background: transparent !important;
+  color: #000 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+html, body {
+  font-size: 11.5pt;
+  line-height: 1.5;
+  background: #fff !important;
+}
+
+/* --- Hide anything that does not belong on paper ------------------------- */
+.site-header,
+.site-nav,
+.nav-toggle,
+.nav-backdrop,
+.scroll-progress,
+.quick-actions,
+.to-top,
+.marquee,
+.cta-band,
+.site-footer__actions,
+.site-footer__legal,
+.site-footer__chips,
+.faq__q::after,
+.map-embed,
+iframe,
+[data-reveal] {
+  display: none !important;
+}
+
+/* Reveal animations must never hide printed content */
+[data-reveal] { opacity: 1 !important; transform: none !important; }
+
+/* --- Simplify surfaces -------------------------------------------------- */
+.hero,
+.service-hero,
+.product-hero,
+.section,
+.section--soft,
+.section--soft-2,
+.section--ink,
+.card,
+.compare__col,
+.process__step,
+.rail__body,
+.feature-card,
+.outcome-card,
+.product-card,
+.service-card,
+.form-panel,
+.contact-card,
+.quick-answer,
+.faq__item {
+  background: #fff !important;
+  border-color: #b9b9b9 !important;
+  box-shadow: none !important;
+  padding: .6rem 0 !important;
+  break-inside: avoid;
+}
+
+.section { padding: 0 0 .8rem !important; }
+.container { max-width: none !important; padding: 0 !important; }
+
+h1 { font-size: 21pt; }
+h2 { font-size: 15pt; page-break-after: avoid; }
+h3, h4 { font-size: 12pt; page-break-after: avoid; }
+
+/* --- Make destinations visible on paper --------------------------------- */
+.prose a[href^="http"]::after,
+.site-footer a[href^="http"]::after {
+  content: " (" attr(href) ")";
+  font-size: 9pt;
+  word-break: break-all;
+}
+
+/* --- Forms print as a plain checklist ---------------------------------- */
+.field__input,
+.field__textarea {
+  border: 1px solid #999 !important;
+  min-height: 1.6rem;
+}
+.enquiry-form button[type="submit"] { display: none !important; }
+
+/* --- Keep structured content readable --------------------------------- */
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #999 !important; padding: .35rem .5rem; }
+svg { max-width: 55mm; height: auto; }
+img { max-width: 100% !important; }
+
+.site-footer { border-top: 1px solid #999; margin-top: 1rem; padding-top: .6rem; }
+.site-footer__inner { display: block; }

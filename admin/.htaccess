@@ -1,0 +1,23 @@
+# ==========================================================================
+# Prospect Digital — Admin Panel Apache Configuration
+# ==========================================================================
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_dir.c>
+    DirectorySlash On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct web access to admin/includes/
+    RewriteRule ^includes/ - [F,L]
+
+    # Extensionless page URLs within admin (/admin/login -> /admin/login.php)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/]+)/?$ $1.php [L]
+</IfModule>

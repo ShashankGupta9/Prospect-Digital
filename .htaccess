@@ -1,0 +1,167 @@
+# ==========================================================================
+# Prospect Digital — Local Apache configuration
+# ==========================================================================
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+<IfModule mod_dir.c>
+    DirectorySlash Off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /prospect-digital/
+
+    # ------------------------------------------------------------------
+    # Sitemap
+    # ------------------------------------------------------------------
+    RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Redirect direct .php URLs to clean URLs
+    # Uses %1 from THE_REQUEST to guarantee no filesystem drive letters (C:/...)
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_METHOD} !=POST
+    RewriteCond %{THE_REQUEST} \s/+prospect-digital/index\.php(?:[?\s]|$) [NC]
+    RewriteRule ^ /prospect-digital/ [R=301,L]
+
+    RewriteCond %{REQUEST_METHOD} !=POST
+    RewriteCond %{THE_REQUEST} \s/+prospect-digital/(.+?)\.php(?:[?\s]|$) [NC]
+    RewriteRule ^ /prospect-digital/%1 [R=301,L,NE]
+
+
+    # ------------------------------------------------------------------
+    # Services main page (/services or /services/)
+    # ------------------------------------------------------------------
+    RewriteRule ^services/?$ services.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Products main page (/products or /products/)
+    # ------------------------------------------------------------------
+    RewriteRule ^products/?$ products.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Work & Projects page (/work or /projects)
+    # ------------------------------------------------------------------
+    RewriteRule ^work/?$ projects.php [L]
+    RewriteRule ^projects/?$ projects.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Services detail pages (/services/software-development, etc.)
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^services/([^/]+)/?$ services/$1.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Products detail pages (/products/routeflow, etc.)
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^products/([^/]+)/?$ products/$1.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Store pages & product detail (/store, /store/slug, /cart, /checkout, etc.)
+    # ------------------------------------------------------------------
+    RewriteRule ^store/?$ store.php [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^store/([^/]+)/?$ store-product.php?slug=$1 [L,QSA]
+
+    RewriteRule ^cart/?$ cart.php [L]
+    RewriteRule ^checkout/?$ checkout.php [L]
+    RewriteRule ^wishlist/?$ wishlist.php [L]
+    RewriteRule ^order-confirmation/?$ order-confirmation.php [L]
+
+
+    # ------------------------------------------------------------------
+    # Other root-level clean pages (/about, /contact, /guides, /privacy, etc.)
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/]+)/?$ $1.php [L]
+
+</IfModule>
+
+
+# ==========================================================================
+# Error page
+# ==========================================================================
+
+ErrorDocument 404 /prospect-digital/404.php
+
+
+# ==========================================================================
+# Security headers
+# ==========================================================================
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+
+# ==========================================================================
+# Protect sensitive files
+# ==========================================================================
+
+<FilesMatch "\.(jsonl|log|md|ini|yml|yaml|sql|bak)$">
+    <If "%{REQUEST_URI} =~ m#^/prospect-digital/(includes|data)/#">
+        Require all denied
+    </If>
+</FilesMatch>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+
+# ==========================================================================
+# Compression
+# ==========================================================================
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml
+    AddOutputFilterByType DEFLATE application/javascript application/json image/svg+xml
+</IfModule>
+
+
+# ==========================================================================
+# Caching
+# ==========================================================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    ExpiresByType text/css               "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml          "access plus 1 year"
+    ExpiresByType image/webp             "access plus 1 year"
+    ExpiresByType image/jpeg             "access plus 1 year"
+    ExpiresByType image/png              "access plus 1 year"
+    ExpiresByType image/x-icon           "access plus 1 year"
+    ExpiresByType font/woff2             "access plus 1 year"
+    ExpiresByType text/html              "access plus 0 seconds"
+</IfModule>
+
+
+# ==========================================================================
+# MIME types
+# ==========================================================================
+
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+    AddType image/avif .avif
+    AddType image/svg+xml .svg
+</IfModule>

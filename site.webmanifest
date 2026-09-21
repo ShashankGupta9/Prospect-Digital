@@ -1,0 +1,26 @@
+{
+  "name": "Prospect Digital — Build. Grow. Scale.",
+  "short_name": "Prospect Digital",
+  "description": "Digital solutions that deliver business growth: software, websites, cloud and marketing from Bhopal, India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0B1330",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/assets/logo/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
