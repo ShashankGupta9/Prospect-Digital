@@ -14,25 +14,56 @@
 declare(strict_types=1);
 
 // ---------------------------------------------------------------------------
-// 1. Environment
+// 1. Environment & .env Configuration
 // ---------------------------------------------------------------------------
+// Load optional .env file if present in the project root
+$env_path = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
+if (is_file($env_path) && is_readable($env_path)) {
+    $env_lines = file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+    foreach ($env_lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, ';')) {
+            continue;
+        }
+        if (str_contains($line, '=')) {
+            [$k, $v] = explode('=', $line, 2);
+            $k = trim($k);
+            $v = trim($v, " \t\n\r\0\x0B\"'");
+            if (!array_key_exists($k, $_SERVER) && !array_key_exists($k, $_ENV)) {
+                putenv("{$k}={$v}");
+                $_ENV[$k] = $v;
+                $_SERVER[$k] = $v;
+            }
+        }
+    }
+}
+
+// Auto-detect local development vs live production server
+$is_local = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
+    || str_contains($_SERVER['HTTP_HOST'] ?? '', 'localhost')
+    || str_contains($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1');
+
 // DEBUG_MODE = true while developing (shows PHP errors).
 // Set it to false on the live server (errors are logged, never printed).
-define('DEBUG_MODE', true);
+$debug_env = getenv('APP_DEBUG');
+define('DEBUG_MODE', $debug_env !== false ? in_array(strtolower((string)$debug_env), ['1', 'true', 'yes'], true) : false);
 
 // ---------------------------------------------------------------------------
-// 2. Website address
+// 2. Website address & Database Configuration
 // ---------------------------------------------------------------------------
 // Canonical / Open Graph / sitemap URLs are built from this value.
-// Change it to your real domain before going live.
-define('SITE_URL', 'https://prospectdigital.in');
-
-// Local preview helper: when the site is opened on localhost the canonical
-// URL stays SITE_URL (correct for production), but links keep working
-// because every link is generated relative to the installed folder.
+define('SITE_URL', getenv('SITE_URL') ?: 'https://prospectdigital.in');
 define('ASSET_VERSION', '1.0.0');
 
 date_default_timezone_set('Asia/Kolkata');
+
+// Database credentials (MySQL / MariaDB on Hostinger or local XAMPP)
+if (!defined('DB_HOST'))    define('DB_HOST',    getenv('DB_HOST') ?: '127.0.0.1');
+if (!defined('DB_NAME'))    define('DB_NAME',    getenv('DB_NAME') ?: 'prospect_digital');
+if (!defined('DB_USER'))    define('DB_USER',    getenv('DB_USER') ?: 'root');
+if (!defined('DB_PASS'))    define('DB_PASS',    getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+if (!defined('DB_PORT'))    define('DB_PORT',    (int) (getenv('DB_PORT') ?: 3306));
+if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
 
 // ---------------------------------------------------------------------------
 // 3. Company details (single source of truth for the whole website)
@@ -64,34 +95,36 @@ define('COMPANY_LATITUDE',  '23.2330');
 define('COMPANY_LONGITUDE', '77.4345');
 
 // ---------------------------------------------------------------------------
-// 4. Contact form
+// 4. Contact form & Mailer Settings (Hostinger / Custom SMTP)
 // ---------------------------------------------------------------------------
 $CONTACT_CONFIG = [
     // Where an enquiry copy should go once mail delivery is configured.
-    'to_email'   => 'hello@prospectdigital.in',
+    'to_email'   => getenv('MAIL_TO') ?: 'hello@prospectdigital.in',
     'to_name'    => 'Prospect Digital Enquiries',
-    'from_email' => 'no-reply@prospectdigital.in',
+    'from_email' => getenv('MAIL_FROM') ?: 'hello@prospectdigital.in',
 
     /*
      * MAIL DRIVER
      * -----------
-     * 'log'  → enquiries are validated and stored in /data/enquiries/ only.
-     *          The visitor still sees a success message with a reference ID.
-     *          USE THIS UNTIL SMTP/MAIL IS CONFIGURED.
-     * 'mail' → additionally attempts PHP's mail() function (works on servers
-     *          with a configured MTA; often blocked on shared hosting).
-     * 'smtp' → reserved for a real SMTP library (PHPMailer / Symfony Mailer).
-     *          Not bundled with this project on purpose: no third-party code
-     *          is shipped here, so 'smtp' currently behaves like 'log'.
-     *
-     * IMPORTANT: this project does NOT claim e-mails are sent. While the
-     * driver is 'log', the site honestly tells the visitor that the enquiry
-     * has been recorded and shows the direct phone / WhatsApp options.
+     * 'log'  → enquiries are validated and stored in /data/enquiries/ and MySQL.
+     *          The visitor sees a confirmation with reference ID.
+     * 'mail' → additionally attempts PHP's standard mail() function.
+     * 'smtp' → delivers directly via authenticated SMTP (Hostinger / Titan / Google).
      */
-    'driver'     => 'log',
+    'driver'     => getenv('MAIL_DRIVER') ?: 'log',
 
-    // Used only when driver = 'mail'.
+    // Used when sending emails.
     'subject_prefix' => '[Website enquiry]',
+
+    // SMTP Settings (for Hostinger or external SMTP)
+    'smtp' => [
+        'host'       => getenv('SMTP_HOST') ?: 'smtp.hostinger.com',
+        'port'       => (int) (getenv('SMTP_PORT') ?: 465),
+        'username'   => getenv('SMTP_USER') ?: 'hello@prospectdigital.in',
+        'password'   => getenv('SMTP_PASS') !== false ? getenv('SMTP_PASS') : '',
+        'encryption' => getenv('SMTP_ENCRYPTION') ?: 'ssl', // 'ssl' (port 465) or 'tls' (port 587)
+        'timeout'    => 10,
+    ],
 
     // Basic spam protection.
     'min_seconds_on_form' => 0,      // 0 to avoid false positive blocks for human visitors

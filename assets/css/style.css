@@ -6,21 +6,21 @@
    1. DESIGN TOKENS & VARIABLES
    ========================================================================== */
 :root {
-  /* Brand Red / Crimson Accent */
-  --brand:           #ef4444;
-  --brand-600:       #dc2626;
-  --brand-700:       #b91c1c;
-  --brand-dark:      #991b1b;
-  --brand-tint:      rgba(239, 68, 68, 0.08);
-  --brand-tint-2:    rgba(239, 68, 68, 0.15);
-  --brand-border:    rgba(239, 68, 68, 0.25);
-  --brand-glow:      rgba(239, 68, 68, 0.35);
+  /* Brand Vibrant Orange */
+  --brand:           #F37321;
+  --brand-600:       #E06114;
+  --brand-700:       #C7510C;
+  --brand-dark:      #A64106;
+  --brand-tint:      rgba(243, 115, 33, 0.08);
+  --brand-tint-2:    rgba(243, 115, 33, 0.15);
+  --brand-border:    rgba(243, 115, 33, 0.25);
+  --brand-glow:      rgba(243, 115, 33, 0.35);
 
   /* Secondary Accents */
-  --accent:          #ef4444;
+  --accent:          #F37321;
   --accent-cyan:     #0284c7;
   --cyan-tint:       rgba(2, 132, 199, 0.1);
-  --accent-tint:     rgba(239, 68, 68, 0.08);
+  --accent-tint:     rgba(243, 115, 33, 0.08);
   --teal:            #059669;
   --teal-tint:       rgba(5, 150, 105, 0.1);
   --teal-ink:        #059669;
@@ -36,23 +36,23 @@
   --bg-soft:         rgba(248, 250, 252, 0.7);
   --bg-soft-2:       rgba(241, 245, 249, 0.7);
 
-  /* Glassmorphism Design Tokens (Light-Red/Rose Translucent Glass) */
-  --glass-bg:               rgba(255, 245, 245, 0.76);
-  --glass-bg-hover:         rgba(255, 238, 240, 0.88);
-  --glass-card-grad:        linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(254, 242, 242, 0.80) 50%, rgba(255, 228, 230, 0.72) 100%);
-  --glass-card-grad-hover:  linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(254, 226, 226, 0.90) 50%, rgba(254, 205, 211, 0.82) 100%);
-  --glass-border:           rgba(254, 205, 211, 0.65);
-  --glass-border-subtle:    rgba(239, 68, 68, 0.14);
-  --glass-shadow:           0 12px 36px -8px rgba(225, 29, 72, 0.09), 0 0 0 1px rgba(255, 255, 255, 0.85) inset;
-  --glass-shadow-hover:     0 22px 50px -10px rgba(239, 68, 68, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.95) inset;
+  /* Glassmorphism Design Tokens (Light-Orange Translucent Glass) */
+  --glass-bg:               rgba(255, 250, 245, 0.76);
+  --glass-bg-hover:         rgba(255, 246, 238, 0.88);
+  --glass-card-grad:        linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(254, 245, 238, 0.80) 50%, rgba(255, 240, 230, 0.72) 100%);
+  --glass-card-grad-hover:  linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(254, 238, 226, 0.90) 50%, rgba(254, 228, 205, 0.82) 100%);
+  --glass-border:           rgba(254, 228, 205, 0.65);
+  --glass-border-subtle:    rgba(243, 115, 33, 0.14);
+  --glass-shadow:           0 12px 36px -8px rgba(243, 115, 33, 0.09), 0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+  --glass-shadow-hover:     0 22px 50px -10px rgba(243, 115, 33, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.95) inset;
   --glass-blur:             blur(16px) saturate(180%);
 
-  /* Deep Dark Surfaces (Footer, CTA Banner, Dashboard Preview Dark Mode) */
-  --bg-dark:         #070d1e;
-  --bg-dark-2:       #0b132b;
-  --bg-dark-3:       #111c3d;
-  --surface-dark:    #152248;
-  --surface-dark-2:  #1d2d5a;
+  /* Deep Dark Surfaces (Dark Navy Blue #0A1C3E) */
+  --bg-dark:         #0A1C3E;
+  --bg-dark-2:       #081630;
+  --bg-dark-3:       #061226;
+  --surface-dark:    #122750;
+  --surface-dark-2:  #183162;
   --text-dark-theme: #f8fafc;
   --muted-dark-theme:#94a3b8;
 
@@ -74,11 +74,11 @@
   --card-border:     rgba(15, 23, 42, 0.07);
 
   /* Gradients */
-  --grad-brand:      linear-gradient(135deg, #f43f5e 0%, #ef4444 60%, #dc2626 100%);
-  --grad-brand-hover:linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #e11d48 100%);
-  --grad-brand-soft: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(225, 29, 72, 0.04) 100%);
-  --grad-dark-cta:   linear-gradient(135deg, #091024 0%, #101c3d 50%, #0d1633 100%);
-  --grad-footer:     linear-gradient(180deg, #080e22 0%, #050916 100%);
+  --grad-brand:      linear-gradient(135deg, #F78C46 0%, #F37321 60%, #E06114 100%);
+  --grad-brand-hover:linear-gradient(135deg, #F9A46B 0%, #F78C46 50%, #F37321 100%);
+  --grad-brand-soft: linear-gradient(135deg, rgba(243, 115, 33, 0.12) 0%, rgba(243, 115, 33, 0.04) 100%);
+  --grad-dark-cta:   linear-gradient(135deg, #0A1C3E 0%, #081630 50%, #061226 100%);
+  --grad-footer:     linear-gradient(180deg, #081630 0%, #061226 100%);
 
   /* Premium Modern Typography (Outfit + Plus Jakarta Sans + Inter) */
   --font-sans:       'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -552,14 +552,16 @@ strong, b { font-weight: 700; color: var(--ink); }
 }
 
 /* Hover & Open States (Slide Down Effect) */
-.site-nav__item--has-menu:hover .mega-menu,
-.site-nav__item--has-menu:focus-within .mega-menu,
-.site-nav__item--has-menu[data-open="true"] .mega-menu {
-  display: block !important;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+@media (min-width: 992px) {
+  .site-nav__item--has-menu:hover .mega-menu,
+  .site-nav__item--has-menu:focus-within .mega-menu,
+  .site-nav__item--has-menu[data-open="true"] .mega-menu {
+    display: block !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* Dropdown Sizes */
@@ -2107,45 +2109,169 @@ body.is-locked {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.site-footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-bottom: 2rem;
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding-bottom: 3rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
-.site-footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.5rem;
+@media (min-width: 768px) {
+  .site-footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
+@media (min-width: 992px) {
+  .site-footer__grid {
+    grid-template-columns: 1.8fr 1fr 1fr 1.2fr 1.5fr;
+    gap: 2rem;
+  }
+}
+
+.site-footer__desc {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  max-width: 320px;
+}
+
+.site-footer__socials-grid {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.site-footer__social-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+.site-footer__social-circle .icon {
+  width: 16px;
+  height: 16px;
+}
+.site-footer__social-circle:hover {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.site-footer__heading {
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+}
+
+.site-footer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .site-footer__link {
   color: #94a3b8;
   font-size: 0.9rem;
   font-weight: 500;
   transition: color var(--dur) var(--ease);
+  text-decoration: none;
 }
 .site-footer__link:hover {
   color: #ffffff;
 }
 
-.site-footer__socials {
+.site-footer__address {
+  font-style: normal;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.site-footer__contact-info {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.newsletter-form {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 1rem;
+}
+.newsletter-form__input {
+  width: 100%;
+  padding: 0.8rem 3rem 0.8rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.newsletter-form__input::placeholder {
+  color: #64748b;
+}
+.newsletter-form__input:focus {
+  border-color: var(--brand);
+  background: rgba(255, 255, 255, 0.08);
+}
+.newsletter-form__submit {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  bottom: 5px;
+  width: 36px;
+  background: var(--brand);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
-.site-footer__social-link {
-  color: #94a3b8;
-  font-size: 1.1rem;
-  transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
+.newsletter-form__submit .icon {
+  width: 16px;
+  height: 16px;
 }
-.site-footer__social-link:hover {
-  color: var(--brand);
-  transform: translateY(-2px);
+.newsletter-form__submit:hover {
+  transform: scale(1.05);
+}
+
+.site-footer__spam-note {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.site-footer__nav-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .site-footer__bottom {
@@ -5100,5 +5226,31 @@ body.is-locked {
   }
 }
 
-
-
+/* ==========================================================================
+   Service Hero Meta
+   ========================================================================== */
+.service-hero__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+.service-hero__meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.service-hero__meta .icon {
+  color: var(--brand);
+}
+@media (min-width: 768px) {
+  .service-hero__meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+}

@@ -11,13 +11,15 @@ $user = user_require_login();
 
 // Query all enquiries submitted by this user's email
 $user_enquiries = [];
-try {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM enquiries WHERE email = :email ORDER BY id DESC");
-    $stmt->execute([':email' => $user['email']]);
-    $user_enquiries = $stmt->fetchAll();
-} catch (PDOException $e) {
-    error_log('Failed to fetch user enquiries: ' . $e->getMessage());
+global $pdo;
+if ($pdo instanceof PDO) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM enquiries WHERE email = :email ORDER BY id DESC");
+        $stmt->execute([':email' => $user['email']]);
+        $user_enquiries = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log('Failed to fetch user enquiries: ' . $e->getMessage());
+    }
 }
 
 $flash = take_flash();

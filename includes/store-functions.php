@@ -26,7 +26,7 @@ if (session_status() === PHP_SESSION_NONE) {
 /**
  * Obtain the global PDO database connection instance.
  */
-function store_db(): PDO
+function store_db(): ?PDO
 {
     global $pdo;
 
@@ -34,7 +34,7 @@ function store_db(): PDO
         require_once __DIR__ . '/database.php';
     }
 
-    return $pdo;
+    return ($pdo instanceof PDO) ? $pdo : null;
 }
 
 /* =========================================================================
@@ -47,6 +47,18 @@ function store_db(): PDO
 function store_get_categories(): array
 {
     $db = store_db();
+    if (!$db) {
+        return [
+            'all' => [
+                'id' => 0,
+                'slug' => 'all',
+                'name' => 'All Products',
+                'icon' => 'grid',
+                'description' => 'Complete catalog of products & hardware modules',
+                'count' => 0,
+            ],
+        ];
+    }
     try {
         $stmt = $db->query("SELECT * FROM `store_categories` WHERE `is_active` = 1 ORDER BY `display_order` ASC, `name` ASC");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -148,6 +160,9 @@ function store_slugify(string $text): string
 function store_get_products(array $filters = [], bool $public_only = true): array
 {
     $db = store_db();
+    if (!$db) {
+        return [];
+    }
 
     $where = [];
     $params = [];
@@ -235,6 +250,9 @@ function store_get_images_for_products(array $product_ids): array
     }
 
     $db = store_db();
+    if (!$db) {
+        return [];
+    }
     $in_placeholders = implode(',', array_fill(0, count($product_ids), '?'));
 
     $sql = "
@@ -276,6 +294,9 @@ function store_get_product_by_slug(string $slug, bool $public_only = true): ?arr
     }
 
     $db = store_db();
+    if (!$db) {
+        return null;
+    }
     $where_public = $public_only ? 'AND p.`is_published` = 1' : '';
 
     $sql = "

@@ -1,5 +1,6 @@
 # ==========================================================================
-# Prospect Digital — Local Apache configuration
+# Prospect Digital — Production & Local Apache Configuration
+# Fully compatible with Hostinger (domain root) and XAMPP (subfolder)
 # ==========================================================================
 
 Options -Indexes -MultiViews
@@ -11,7 +12,11 @@ DirectoryIndex index.php index.html
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /prospect-digital/
+
+    # ------------------------------------------------------------------
+    # Block direct web access to backend data & includes folders
+    # ------------------------------------------------------------------
+    RewriteRule ^(?:includes|data)/ - [F,L]
 
     # ------------------------------------------------------------------
     # Sitemap
@@ -21,15 +26,20 @@ DirectoryIndex index.php index.html
 
     # ------------------------------------------------------------------
     # Redirect direct .php URLs to clean URLs
-    # Uses %1 from THE_REQUEST to guarantee no filesystem drive letters (C:/...)
+    # Extracts the exact request path from %{THE_REQUEST} so it works
+    # dynamically at domain root (Hostinger) or subfolder (e.g. /prospect-digital/)
     # ------------------------------------------------------------------
     RewriteCond %{REQUEST_METHOD} !=POST
-    RewriteCond %{THE_REQUEST} \s/+prospect-digital/index\.php(?:[?\s]|$) [NC]
-    RewriteRule ^ /prospect-digital/ [R=301,L]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^?]+)/index\.php(?:[?\s]|$) [NC]
+    RewriteRule ^ %1/ [R=301,L]
 
     RewriteCond %{REQUEST_METHOD} !=POST
-    RewriteCond %{THE_REQUEST} \s/+prospect-digital/(.+?)\.php(?:[?\s]|$) [NC]
-    RewriteRule ^ /prospect-digital/%1 [R=301,L,NE]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/index\.php(?:[?\s]|$) [NC]
+    RewriteRule ^ / [R=301,L]
+
+    RewriteCond %{REQUEST_METHOD} !=POST
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php(?:[?\s]|$) [NC]
+    RewriteRule ^ %1 [R=301,L,NE]
 
 
     # ------------------------------------------------------------------
@@ -90,14 +100,21 @@ DirectoryIndex index.php index.html
     RewriteCond %{REQUEST_FILENAME}.php -f
     RewriteRule ^([^/]+)/?$ $1.php [L]
 
+    # ------------------------------------------------------------------
+    # Clean 404 Fallback for non-existent URLs
+    # ------------------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.*$ 404.php [L]
+
 </IfModule>
 
 
 # ==========================================================================
-# Error page
+# Error page (Fallback for direct server errors)
 # ==========================================================================
 
-ErrorDocument 404 /prospect-digital/404.php
+ErrorDocument 404 /404.php
 
 
 # ==========================================================================
@@ -116,10 +133,8 @@ ErrorDocument 404 /prospect-digital/404.php
 # Protect sensitive files
 # ==========================================================================
 
-<FilesMatch "\.(jsonl|log|md|ini|yml|yaml|sql|bak)$">
-    <If "%{REQUEST_URI} =~ m#^/prospect-digital/(includes|data)/#">
-        Require all denied
-    </If>
+<FilesMatch "\.(jsonl|log|md|ini|yml|yaml|sql|bak|env)$">
+    Require all denied
 </FilesMatch>
 
 <FilesMatch "^\.">

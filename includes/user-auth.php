@@ -12,9 +12,14 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/functions.php';
 /**
  * Guarantee that the users table exists in the database
+/**
+ * Ensure users table exists in MySQL
  */
-function ensure_users_table(PDO $pdo): void
+function ensure_users_table(?PDO $pdo): void
 {
+    if (!$pdo) {
+        return;
+    }
     static $checked = false;
     if ($checked) {
         return;
@@ -44,6 +49,10 @@ function ensure_users_table(PDO $pdo): void
 function user_register(string $name, string $email, string $phone, string $password): array
 {
     global $pdo;
+
+    if (!($pdo instanceof PDO)) {
+        return ['ok' => false, 'errors' => ['general' => 'Database is not yet connected. Please check configuration.']];
+    }
 
     ensure_users_table($pdo);
 
@@ -119,6 +128,10 @@ function user_register(string $name, string $email, string $phone, string $passw
 function user_login(string $email, string $password): array
 {
     global $pdo;
+
+    if (!($pdo instanceof PDO)) {
+        return ['ok' => false, 'error' => 'Database is not yet connected. Please check configuration.'];
+    }
 
     ensure_users_table($pdo);
 

@@ -15,6 +15,22 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/store-functions.php';
 
+$cur_user = current_user();
+if (!$cur_user) {
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+        $is_ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+            || (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'));
+        if ($is_ajax) {
+            http_response_code(401);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['ok' => false, 'error' => 'Please log in to use the cart']);
+            exit;
+        }
+    }
+    header('Location: ' . url('login?return=' . urlencode(url('cart'))));
+    exit;
+}
+
 // Handle POST actions
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $action     = clean_text($_POST['action'] ?? '', 40);

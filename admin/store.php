@@ -192,6 +192,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $images = array_values(array_unique($images));
 
+        // Handle soft deleted images and garbage collection
+        $removed_images = $_POST['remove_images'] ?? [];
+        if (!empty($removed_images) && is_array($removed_images)) {
+            $images = array_values(array_diff($images, $removed_images));
+
+            $gc_file = ADMIN_DATA_DIR . DIRECTORY_SEPARATOR . 'deleted_images.json';
+            $deleted_log = [];
+            if (file_exists($gc_file)) {
+                $deleted_log = json_decode(file_get_contents($gc_file), true) ?: [];
+            }
+
+            foreach ($removed_images as $r_img) {
+                $deleted_log[] = $r_img;
+            }
+
+            while (count($deleted_log) > 10) {
+                $oldest = array_shift($deleted_log);
+                if (str_starts_with($oldest, 'assets/images/store/')) {
+                    $abs_path = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $oldest);
+                    if (file_exists($abs_path)) {
+                        @unlink($abs_path);
+                    }
+                }
+            }
+            @file_put_contents($gc_file, json_encode($deleted_log, JSON_PRETTY_PRINT));
+        }
+
         $is_published = isset($_POST['is_published']) ? 1 : 0;
         $is_featured  = isset($_POST['is_featured']) ? 1 : 0;
 
@@ -460,6 +487,9 @@ require __DIR__ . '/includes/header.php';
               <?php foreach ($edit_product['images'] as $img): ?>
                 <div class="prod-preview-card">
                   <img src="<?= htmlspecialchars($img, ENT_QUOTES, 'UTF-8') ?>" alt="Product Media">
+                  <button type="button" class="prod-image-remove-btn" onclick="removeProductImage(this, '<?= htmlspecialchars($img, ENT_QUOTES, 'UTF-8') ?>')" aria-label="Remove image">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
                 </div>
               <?php endforeach; ?>
             </div>
@@ -821,4 +851,22 @@ require __DIR__ . '/includes/header.php';
   </div>
 <?php endif; ?>
 
+<script>
+function removeProductImage(btn, imageUrl) {
+    if (confirm('Are you sure you want to remove this image from the product?')) {
+        const card = btn.closest('.prod-preview-card');
+        const form = card.closest('form');
+        
+        // Add hidden input to post array
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'remove_images[]';
+        hiddenInput.value = imageUrl;
+        form.appendChild(hiddenInput);
+        
+        // Hide visually
+        card.style.display = 'none';
+    }
+}
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

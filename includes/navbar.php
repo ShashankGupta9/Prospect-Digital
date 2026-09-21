@@ -34,8 +34,7 @@ if ($is_store_section) {
     <a class="site-logo" href="<?= e(url('')) ?>" aria-label="<?= e(COMPANY_NAME) ?> — home">
       <?php require __DIR__ . '/logo-mark.php'; ?>
       <span class="site-logo__text">
-        <span class="site-logo__name">Prospect</span>
-        <span class="site-logo__sub">Digital</span>
+        
       </span>
     </a>
 
@@ -131,6 +130,12 @@ if ($is_store_section) {
                 <span class="site-nav__mobile-email"><?= e($cur_user['email']) ?></span>
               </div>
             </div>
+            <div class="site-nav__mobile-store" style="margin-bottom: 0.75rem;">
+              <a class="btn btn--outline btn--sm" href="<?= e(url('cart')) ?>" style="width: 100%; justify-content: center; gap: 0.5rem;">
+                <?= icon('shopping-bag', 'icon') ?>
+                <span>Shopping Cart (<?= $cart_count ?>)</span>
+              </a>
+            </div>
             <div class="site-nav__mobile-auth-links">
               <a class="btn btn--brand btn--sm" href="<?= e(url('dashboard')) ?>" style="flex: 1; justify-content: center;">Dashboard</a>
               <a class="btn btn--outline btn--sm" href="<?= e(url('logout.php')) ?>" style="flex: 1; justify-content: center;">Sign Out</a>
@@ -141,12 +146,6 @@ if ($is_store_section) {
               <a class="btn btn--brand btn--sm" href="<?= e(url('signup?return=' . urlencode(canonical_url()))) ?>" style="flex: 1; justify-content: center;">Sign Up</a>
             </div>
           <?php endif; ?>
-          <div class="site-nav__mobile-store" style="margin-bottom: 0.75rem;">
-            <a class="btn btn--outline btn--sm" href="<?= e(url('cart')) ?>" style="width: 100%; justify-content: center; gap: 0.5rem;">
-              <?= icon('shopping-bag', 'icon') ?>
-              <span>Shopping Cart (<?= $cart_count ?>)</span>
-            </a>
-          </div>
         <?php endif; ?>
         <a class="btn btn--brand btn--lg" href="<?= e(url('contact')) ?>" style="width: 100%; justify-content: center;">
           <span>LET'S TALK</span>
@@ -159,13 +158,12 @@ if ($is_store_section) {
     <!-- Right: user auth + primary action + mobile toggle -->
     <div class="site-header__actions">
       <?php if ($is_store_section): ?>
-        <!-- Store Cart Link with Badge -->
-        <a class="nav-cart-btn" href="<?= e(url('cart')) ?>" aria-label="Shopping Cart (<?= $cart_count ?> items)" title="Shopping Cart">
-          <?= icon('shopping-bag', 'icon nav-cart-icon') ?>
-          <span class="nav-cart-badge" id="navCartBadge"<?= $cart_count > 0 ? '' : ' style="display:none;"' ?>><?= $cart_count ?></span>
-        </a>
-
         <?php if ($cur_user): ?>
+          <!-- Store Cart Link with Badge -->
+          <a class="nav-cart-btn" href="<?= e(url('cart')) ?>" aria-label="Shopping Cart (<?= $cart_count ?> items)" title="Shopping Cart">
+            <?= icon('shopping-bag', 'icon nav-cart-icon') ?>
+            <span class="nav-cart-badge" id="navCartBadge"<?= $cart_count > 0 ? '' : ' style="display:none;"' ?>><?= $cart_count ?></span>
+          </a>
           <div class="site-header__user-group">
             <a class="user-nav-badge" href="<?= e(url('dashboard')) ?>" title="Account Dashboard — <?= e($cur_user['name']) ?>">
               <span class="user-nav-avatar" aria-hidden="true"><?= e(strtoupper(mb_substr($cur_user['name'], 0, 1))) ?></span>
@@ -193,8 +191,7 @@ if ($is_store_section) {
       </a>
 
       <button class="nav-toggle" id="navToggle" type="button"
-              aria-controls="primaryNav" aria-expanded="false" aria-label="Open navigation menu"
-              onclick="if(window.pdToggleNav){window.pdToggleNav();}else{var n=document.getElementById('primaryNav'),b=document.getElementById('navBackdrop'),o=this.getAttribute('aria-expanded')==='true';n.classList.toggle('is-open',!o);this.setAttribute('aria-expanded',!o);this.classList.toggle('is-active',!o);document.body.classList.toggle('is-locked',!o);if(b){b.hidden=o;if(!o)b.classList.add('is-visible');else b.classList.remove('is-visible');}}">
+              aria-controls="primaryNav" aria-expanded="false" aria-label="Open navigation menu">
         <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
     </div>

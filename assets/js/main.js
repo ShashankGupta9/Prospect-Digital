@@ -166,57 +166,6 @@
       }
     });
 
-    // ============================================================
-// Services / Products submenu toggle
-// ============================================================
-
-var submenuToggles = nav.querySelectorAll('.site-nav__toggle');
-
-Array.prototype.forEach.call(submenuToggles, function (btn) {
-
-  btn.addEventListener('click', function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    var parent = btn.closest('.site-nav__item--has-menu');
-
-    if (!parent) return;
-
-    var menu = parent.querySelector('.mega-menu');
-
-    if (!menu) return;
-
-    var isOpen = parent.getAttribute('data-open') === 'true';
-
-    // Close all other submenus
-    Array.prototype.forEach.call(
-      nav.querySelectorAll('.site-nav__item--has-menu'),
-      function (other) {
-
-        var otherBtn = other.querySelector('.site-nav__toggle');
-        var otherMenu = other.querySelector('.mega-menu');
-
-        other.setAttribute('data-open', 'false');
-
-        if (otherBtn) {
-          otherBtn.setAttribute('aria-expanded', 'false');
-        }
-
-        if (otherMenu) {
-          otherMenu.hidden = true;
-        }
-      }
-    );
-
-    // Open clicked submenu if it was closed
-    if (!isOpen) {
-      parent.setAttribute('data-open', 'true');
-      btn.setAttribute('aria-expanded', 'true');
-      menu.hidden = false;
-    }
-  });
-
-});
 
     // Reset state when the viewport grows into the desktop layout
     function handleViewport() {

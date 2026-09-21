@@ -623,7 +623,7 @@ function process_enquiry(): array
 
         $stored = store_enquiry($record);
 
-        if ($stored && in_array($CONTACT_CONFIG['driver'], ['mail'], true)) {
+        if ($stored && in_array($CONTACT_CONFIG['driver'], ['mail', 'smtp'], true)) {
             $record['mail_sent'] = send_enquiry_mail($record);
         }
 
@@ -724,14 +724,159 @@ function store_enquiry(array $record): bool
 }
 
 /**
- * Attempt to e-mail an enquiry using PHP's mail().
- * Returns true only when the MTA accepted the message.
- * Called ONLY when the driver is set to 'mail' in config.php.
+ * Send an email directly via authenticated SMTP socket (pure PHP, zero dependencies).
+ * Works reliably on Hostinger (smtp.hostinger.com, port 465 SSL or 587 TLS).
+ */
+function pd_send_smtp_mail(array $smtp, string $to, string $subject, string $body, array $headers = []): bool
+{
+    $host       = $smtp['host'] ?? 'smtp.hostinger.com';
+    $port       = (int) ($smtp['port'] ?? 465);
+    $user       = $smtp['username'] ?? '';
+    $pass       = $smtp['password'] ?? '';
+    $encryption = strtolower((string) ($smtp['encryption'] ?? 'ssl'));
+    $timeout    = (int) ($smtp['timeout'] ?? 10);
+
+    if (empty($host) || empty($user) || empty($pass)) {
+        error_log('Prospect Digital SMTP: Missing host, username, or password in configuration.');
+        return false;
+    }
+
+    $socketHost = ($encryption === 'ssl') ? 'ssl://' . $host : $host;
+    $socket = @fsockopen($socketHost, $port, $errno, $errstr, $timeout);
+    if (!$socket) {
+        error_log("Prospect Digital SMTP: Connection to {$host}:{$port} failed: {$errstr} ({$errno})");
+        return false;
+    }
+
+    stream_set_timeout($socket, $timeout);
+
+    $readResponse = static function () use ($socket): string {
+        $response = '';
+        while ($line = fgets($socket, 515)) {
+            $response .= $line;
+            if (isset($line[3]) && $line[3] === ' ') {
+                break;
+            }
+        }
+        return $response;
+    };
+
+    $sendCommand = static function (string $cmd) use ($socket): void {
+        fputs($socket, $cmd . "\r\n");
+    };
+
+    $checkCode = static function (string $response, string $expectedCode): bool {
+        return str_starts_with(trim($response), $expectedCode);
+    };
+
+    $res = $readResponse();
+    if (!$checkCode($res, '220')) {
+        error_log("Prospect Digital SMTP: Invalid greeting: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    $clientDomain = $_SERVER['SERVER_NAME'] ?? 'localhost';
+    $sendCommand("EHLO {$clientDomain}");
+    $res = $readResponse();
+
+    if ($encryption === 'tls') {
+        $sendCommand('STARTTLS');
+        $res = $readResponse();
+        if (!$checkCode($res, '220')) {
+            error_log("Prospect Digital SMTP: STARTTLS command failed: {$res}");
+            fclose($socket);
+            return false;
+        }
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            error_log('Prospect Digital SMTP: TLS cryptographic handshake failed.');
+            fclose($socket);
+            return false;
+        }
+        $sendCommand("EHLO {$clientDomain}");
+        $res = $readResponse();
+    }
+
+    // AUTH LOGIN
+    $sendCommand('AUTH LOGIN');
+    $res = $readResponse();
+    if (!$checkCode($res, '334')) {
+        error_log("Prospect Digital SMTP: AUTH LOGIN failed: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    $sendCommand(base64_encode($user));
+    $res = $readResponse();
+    if (!$checkCode($res, '334')) {
+        error_log("Prospect Digital SMTP: Username rejected: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    $sendCommand(base64_encode($pass));
+    $res = $readResponse();
+    if (!$checkCode($res, '235')) {
+        error_log("Prospect Digital SMTP: Authentication failed: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    // Envelope
+    $fromEmail = !empty($smtp['from_email']) ? $smtp['from_email'] : $user;
+    $sendCommand("MAIL FROM: <{$fromEmail}>");
+    $res = $readResponse();
+    if (!$checkCode($res, '250')) {
+        error_log("Prospect Digital SMTP: MAIL FROM rejected: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    $sendCommand("RCPT TO: <{$to}>");
+    $res = $readResponse();
+    if (!$checkCode($res, '250')) {
+        error_log("Prospect Digital SMTP: RCPT TO rejected: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    $sendCommand('DATA');
+    $res = $readResponse();
+    if (!$checkCode($res, '354')) {
+        error_log("Prospect Digital SMTP: DATA command rejected: {$res}");
+        fclose($socket);
+        return false;
+    }
+
+    // Build message
+    $headers['To']      = $to;
+    $headers['Subject'] = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $headers['Date']    = date('r');
+
+    $headerStr = '';
+    foreach ($headers as $k => $v) {
+        $headerStr .= "{$k}: {$v}\r\n";
+    }
+
+    $msg = $headerStr . "\r\n" . $body . "\r\n.";
+    $sendCommand($msg);
+    $res = $readResponse();
+    $sent = $checkCode($res, '250');
+
+    $sendCommand('QUIT');
+    fclose($socket);
+
+    return $sent;
+}
+
+/**
+ * Dispatch an enquiry notification email using configured driver (smtp or mail).
  */
 function send_enquiry_mail(array $record): bool
 {
     global $CONTACT_CONFIG;
 
+    $driver  = $CONTACT_CONFIG['driver'] ?? 'log';
     $to      = header_safe($CONTACT_CONFIG['to_email']);
     $from    = header_safe($CONTACT_CONFIG['from_email']);
     $subject = header_safe($CONTACT_CONFIG['subject_prefix'] . ' ' . $record['service'] . ' — ' . $record['name']);
@@ -752,13 +897,27 @@ function send_enquiry_mail(array $record): bool
     $body = implode("\n", $lines);
 
     $headers = [
-        'From: ' . header_safe($CONTACT_CONFIG['to_name']) . ' <' . $from . '>',
-        'Reply-To: ' . header_safe($record['name']) . ' <' . header_safe($record['email']) . '>',
-        'Content-Type: text/plain; charset=UTF-8',
-        'X-Mailer: PHP/' . PHP_VERSION,
+        'From'         => header_safe($CONTACT_CONFIG['to_name']) . ' <' . $from . '>',
+        'Reply-To'     => header_safe($record['name']) . ' <' . header_safe($record['email']) . '>',
+        'Content-Type' => 'text/plain; charset=UTF-8',
+        'X-Mailer'     => 'Prospect Digital / PHP ' . PHP_VERSION,
     ];
 
-    return @mail($to, $subject, $body, implode("\r\n", $headers));
+    if ($driver === 'smtp') {
+        $smtpConfig = $CONTACT_CONFIG['smtp'] ?? [];
+        $smtpConfig['from_email'] = $from;
+        return pd_send_smtp_mail($smtpConfig, $to, $subject, $body, $headers);
+    }
+
+    if ($driver === 'mail') {
+        $rawHeaders = [];
+        foreach ($headers as $k => $v) {
+            $rawHeaders[] = "{$k}: {$v}";
+        }
+        return @mail($to, $subject, $body, implode("\r\n", $rawHeaders), "-f " . escapeshellarg($from));
+    }
+
+    return false;
 }
 
 /* =========================================================================

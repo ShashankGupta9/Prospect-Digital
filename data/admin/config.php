@@ -7,12 +7,12 @@ return array (
     'admin' => 
     array (
       'username' => 'admin',
-      'password_hash' => '$2y$10$N3OukP7DdNevkpL6ojzlaeWA3Wl3MgwVX3LzQYUcExISLt.mVYDmO',
+      'password_hash' => '$2y$10$ya82MTXhwtcg4eg7.NPxIOqRM9qesAO3HLPQYuIWN6yeZGXO6QD/e',
       'name' => 'Prospect Administrator',
       'email' => 'hello@prospectdigital.in',
       'role' => 'superadmin',
       'created_at' => '2026-09-18T16:40:00+05:30',
-      'last_login' => '2026-09-19T16:25:23+05:30',
+      'last_login' => '2026-09-21T11:47:22+05:30',
     ),
   ),
   'settings' => 

@@ -12,21 +12,21 @@
   --admin-surface-hover: #f8fafc;
   --admin-border: #e2e8f0;
   --admin-border-strong: #cbd5e1;
-  --admin-border-focus: #ef4444;
+  --admin-border-focus: #F37321;
 
   /* Typography / Inks */
   --admin-text-primary: #090d16;
   --admin-text-secondary: #475569;
   --admin-text-muted: #64748b;
 
-  /* Brand Accents & Gradients */
-  --admin-brand: #ef4444;
-  --admin-brand-600: #dc2626;
-  --admin-brand-hover: #e11d48;
-  --admin-grad-brand: linear-gradient(135deg, #f43f5e 0%, #ef4444 60%, #dc2626 100%);
-  --admin-grad-brand-hover: linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #e11d48 100%);
-  --admin-brand-tint: rgba(239, 68, 68, 0.08);
-  --admin-brand-tint-2: rgba(239, 68, 68, 0.14);
+  /* Brand Accents & Gradients (Vibrant Orange) */
+  --admin-brand: #F37321;
+  --admin-brand-600: #E06114;
+  --admin-brand-hover: #C7510C;
+  --admin-grad-brand: linear-gradient(135deg, #F78C46 0%, #F37321 60%, #E06114 100%);
+  --admin-grad-brand-hover: linear-gradient(135deg, #F9A46B 0%, #F78C46 50%, #F37321 100%);
+  --admin-brand-tint: rgba(243, 115, 33, 0.08);
+  --admin-brand-tint-2: rgba(243, 115, 33, 0.14);
 
   /* Status Colors */
   --admin-accent: #2563eb;
@@ -46,7 +46,7 @@
   --admin-radius-lg: 18px;
   --admin-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
   --admin-shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(226, 232, 240, 0.85);
-  --admin-shadow-hover: 0 16px 36px -6px rgba(225, 29, 72, 0.10), 0 0 0 1px rgba(244, 63, 94, 0.25);
+  --admin-shadow-hover: 0 16px 36px -6px rgba(243, 115, 33, 0.10), 0 0 0 1px rgba(243, 115, 33, 0.25);
 
   --admin-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --admin-sidebar-width: 260px;
@@ -424,36 +424,33 @@ a {
   background: var(--admin-surface-card);
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-md);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   box-shadow: var(--admin-shadow-card);
   overflow: hidden;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 1.5rem;
 }
-
 .card--interactive:hover {
   transform: translateY(-3px);
   box-shadow: var(--admin-shadow-hover);
 }
-
 .card-header {
-  padding: 1.25rem 1.6rem;
+  padding: 0 0 1.5rem 0;
   border-bottom: 1px solid var(--admin-border);
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  background: #fafbfc;
 }
-
 .card-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--admin-text-primary);
 }
-
 .card-body {
-  padding: 1.6rem;
+  padding: 0;
 }
 
 /* ==========================================================================
@@ -1067,24 +1064,69 @@ a {
 .prod-current-images-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .prod-preview-card {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--admin-radius-sm);
   overflow: hidden;
   border: 1px solid var(--admin-border);
   background: #fff;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.prod-preview-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.prod-preview-card:hover::after {
+  opacity: 1;
+}
+
+.prod-image-remove-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.prod-preview-card:hover .prod-image-remove-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .prod-preview-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.prod-preview-card:hover img {
+  transform: scale(1.05);
 }
 
 /* Modal / Slide-out Box */

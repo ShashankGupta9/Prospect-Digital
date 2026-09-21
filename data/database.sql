@@ -1,0 +1,2 @@
+-- Master database schema also saved here for reference
+-- See /database.sql in the root directory for the primary copy.

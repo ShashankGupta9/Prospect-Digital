@@ -16,6 +16,12 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/store-functions.php';
 
+$cur_user = current_user();
+if (!$cur_user) {
+    header('Location: ' . url('login?return=' . urlencode(url('checkout'))));
+    exit;
+}
+
 $cart = store_cart_get();
 
 // Redirect to cart if empty
