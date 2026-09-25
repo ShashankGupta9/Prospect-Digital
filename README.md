@@ -358,6 +358,27 @@ All copy lives in **`includes/data.php`**:
 Edit the text, save, refresh — the change appears on every page that uses it. Page layout files
 rarely need to change.
 
+### Managing portfolio work
+
+Named portfolio and case-study cards are managed from **Admin → Work & Case Studies**
+(`admin/work.php`). The records are stored in the `pd_work_items` table and include the
+client name, category, live URL, image, scope, outcome, related services, publish status,
+featured status and display order. The table is created automatically when the configured
+MySQL database is available; `data/work_schema.sql` is also provided for manual imports.
+
+The managed portfolio table starts empty. The public Projects page only shows work that
+has been added and published from the admin panel.
+
+### Managing the team
+
+The About page team section is managed from **Admin → Team** (`admin/team.php`).
+Administrators can add, edit, publish, reorder and delete members, add an optional LinkedIn
+profile, and upload JPG, PNG or WebP photos up to 5 MB. Photos are stored under
+`assets/images/team/`, while member details are stored in the `pd_team_members` table.
+The table is created automatically when MySQL is available; `data/content_schema.sql` is
+provided as the combined manual import for both managed content tables. It does not remove
+existing enquiries, admin users, products, orders or uploaded media.
+
 > The before/after and engagement content is written at sector level. Add named client case studies
 > only with written permission, and only with figures you can support.
 
